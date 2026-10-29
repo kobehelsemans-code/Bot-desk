@@ -1,0 +1,263 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bot Desk</title>
+<style>
+:root{--bg:#000;--card:#111114;--card2:#18181d;--line:#232329;--tx:#f5f5f7;--mut:#8e8e93;--g:#22c55e;--r:#ef4444;--b:#3b82f6;--o:#f59e0b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;background:#050506;color:var(--tx);font:15px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Inter,Roboto,sans-serif;font-variant-numeric:tabular-nums}
+.app{max-width:420px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;overflow-x:hidden;padding-bottom:90px}
+@media(min-width:480px){body{padding:20px 0;background:radial-gradient(800px 500px at 50% 0,#10251a,#050506)}.app{min-height:calc(100vh - 40px);border-radius:36px;border:1px solid #1c1c22;box-shadow:0 30px 80px #000c}}
+.page{display:none;padding:18px 18px 0;animation:fi .35s ease}.page.on{display:block}@keyframes fi{from{opacity:0;transform:translateY(8px)}}
+.top{display:flex;justify-content:space-between;align-items:center;color:var(--mut);font-size:13px}.av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#0ea5e9);display:grid;place-items:center;font-size:16px}
+.bal{font-size:44px;font-weight:700;letter-spacing:-1.5px;margin:6px 0 2px}.chg{font-size:15px;font-weight:600}.mult{margin-left:8px;padding:2px 8px;border-radius:8px;background:var(--card2);color:var(--tx);font-size:13px}
+.g{color:var(--g)}.r{color:var(--r)}.mut{color:var(--mut)}.sm{font-size:12px;color:var(--mut)}
+.chart{position:relative;margin:14px -18px 4px}.chart canvas{width:100%;height:170px;display:block}.live{position:absolute;top:6px;right:18px;font-size:11px;font-weight:700;letter-spacing:1px;padding:3px 9px;border-radius:20px;background:#22c55e22;color:var(--g)}
+.live:before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--g);margin-right:5px;vertical-align:1px;animation:pl 1.6s infinite}@keyframes pl{50%{opacity:.2}}
+h3{font-size:19px;margin:22px 0 10px;letter-spacing:-.3px;display:flex;justify-content:space-between;align-items:baseline}h3 small{font-size:12px;color:var(--mut);font-weight:400}
+.car{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -18px;padding:0 18px 6px;scrollbar-width:none}.car::-webkit-scrollbar{display:none}
+.ag{flex:0 0 78%;scroll-snap-align:start;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px;min-height:170px}
+.agh{display:flex;align-items:center;gap:10px;margin-bottom:10px}.agi{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;font-size:18px}.agh b{font-size:16px}.st{margin-left:auto;font-size:11px;color:var(--g);background:#22c55e1a;padding:3px 8px;border-radius:10px}
+.kv{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-top:1px solid #1b1b20}.kv:first-of-type{border:0}.kv span:first-child{color:var(--mut)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:14px 16px;margin-bottom:12px}
+.it{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #1b1b20}.it:last-child{border:0}.ic{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:15px;font-weight:700;flex:none}
+.it .m{flex:1;min-width:0}.it .m div:first-child{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.it .v{text-align:right;font-weight:600}
+.bg-g{background:#22c55e22;color:var(--g)}.bg-r{background:#ef444422;color:var(--r)}.bg-b{background:#3b82f622;color:var(--b)}.bg-m{background:#ffffff12;color:var(--mut)}
+.pc{cursor:pointer;transition:transform .15s}.pc:active{transform:scale(.98)}
+.bar{position:relative;height:6px;border-radius:4px;background:linear-gradient(90deg,#ef444466,#2a2a30 50%,#22c55e66);margin:16px 0 6px}.mk{position:absolute;top:-4px;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:#fff;border:3px solid #000;transition:left .8s}.ent{position:absolute;top:-3px;width:2px;height:12px;background:var(--b)}
+.bl{display:flex;justify-content:space-between;font-size:11px;color:var(--mut)}
+.tabs{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:420px;display:flex;background:#0b0b0dee;backdrop-filter:blur(20px);border-top:1px solid var(--line);padding:8px 0 max(14px,env(safe-area-inset-bottom));z-index:5}
+@media(min-width:480px){.tabs{bottom:20px;border-radius:0 0 36px 36px}}
+.tabs button{flex:1;background:none;border:0;color:var(--mut);font:inherit;font-size:11px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}.tabs button.on{color:var(--g)}.tabs svg{width:24px;height:24px}
+.toasts{position:fixed;top:12px;left:50%;transform:translateX(-50%);width:calc(100% - 24px);max-width:396px;z-index:20;pointer-events:none}
+.toast{display:flex;gap:10px;align-items:center;background:#1c1c21f2;backdrop-filter:blur(20px);border:1px solid #2c2c33;border-radius:18px;padding:11px 13px;margin-bottom:8px;box-shadow:0 10px 30px #0008;animation:td .45s cubic-bezier(.2,1.4,.4,1)}.toast.out{transition:.4s;opacity:0;transform:translateY(-20px)}@keyframes td{from{opacity:0;transform:translateY(-30px) scale(.95)}}
+.err{display:none;margin:10px 0 0;background:#3a1418;border:1px solid #7f1d1d;color:#fecaca;padding:9px 12px;border-radius:14px;font-size:12px}
+.det{position:fixed;inset:0;z-index:10;display:none;overflow:auto;background:#050506}.det.on{display:block;animation:sl .3s ease}@keyframes sl{from{transform:translateX(40px);opacity:0}}
+.det .app{padding:18px}.back{background:var(--card2);border:0;color:var(--tx);width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer}
+.sol{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 8px;border-radius:10px;background:linear-gradient(90deg,#9945ff33,#14f19533);color:#c4b5fd}
+.mx{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mx div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:11px 13px}.mx b{display:block;font-size:17px;margin-top:2px}
+#cc{width:100%;height:260px;display:block}.seg{display:flex;gap:6px;margin:8px 0}.seg button{flex:1;background:var(--card2);border:0;color:var(--mut);border-radius:10px;padding:6px;font:inherit;font-size:12px;cursor:pointer}.seg button.on{background:#22c55e22;color:var(--g)}
+.tag{font-size:10px;padding:2px 6px;border-radius:6px;background:#ffffff12;color:var(--mut);margin-left:6px;font-weight:500}
+#cf{position:fixed;inset:0;pointer-events:none;z-index:30}
+</style><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Bot Desk">
+<meta name="theme-color" content="#000000"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>@media(display-mode:standalone){body{padding:0!important;background:#000!important}.app{border:0!important;border-radius:0!important;min-height:100vh!important;box-shadow:none!important}.tabs{bottom:0!important;border-radius:0!important}}
+.page{padding-top:max(18px,env(safe-area-inset-top))!important;padding-left:max(18px,env(safe-area-inset-left));padding-right:max(18px,env(safe-area-inset-right))}
+.det .app{padding-top:max(18px,env(safe-area-inset-top))!important}.toasts{top:max(12px,env(safe-area-inset-top))}.app{padding-bottom:calc(90px + env(safe-area-inset-bottom))}</style>
+</head><body>
+<div class="toasts" id="toasts"></div><canvas id="cf"></canvas>
+<div class="app">
+ <section class="page on" id="p-home">
+  <div class="top"><span>Portfolio</span><span id="upd">connecting…</span></div>
+  <div class="bal" id="tot">$—</div>
+  <div><span class="chg" id="gain">—</span><span class="mult" id="mult">—x</span></div>
+  <div class="err" id="err"></div>
+  <div class="chart"><canvas id="ch"></canvas><span class="live">LIVE</span></div>
+  <div class="sm" id="chi" style="text-align:center"></div>
+  <h3>Agents <small>swipe →</small></h3><div class="car" id="agents"></div>
+  <h3>Positions <small id="slots"></small></h3><div class="card" id="hpos"></div>
+  <h3>Activity <small id="actsrc"></small></h3><div class="card" id="act"></div>
+ </section>
+ <section class="page" id="p-pos">
+  <h3 style="margin-top:4px">Open positions</h3><div id="pos"></div>
+  <h3>Holdings <small>live · dust hidden</small></h3><div class="card" id="hold"></div>
+  <div class="card"><div class="kv"><span>SOL cash</span><span id="solc">—</span></div><div class="kv"><span>SOL price</span><span id="solp">—</span></div><div class="kv"><span>Wallet</span><a id="wl" target="_blank" style="color:var(--b);text-decoration:none"></a></div></div>
+ </section>
+ <section class="page" id="p-hist">
+  <h3 style="margin-top:4px">History <small id="hsrc"></small></h3>
+  <div class="mx" style="margin-bottom:12px" id="hstat"></div><div class="card" id="hist"></div>
+ </section>
+ <nav class="tabs">
+  <button class="on" data-p="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
+  <button data-p="pos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>Positions</button>
+  <button data-p="hist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>History</button>
+ </nav>
+</div>
+<div class="det" id="det"><div class="app" id="detb"></div></div>
+<script>
+const SNAP=/*SNAP*/{"as_of": "2026-10-29 23:20", "open": [{"id": "V1-13", "name": "VEIL", "mint": "HgTGdc29D5bDMrDvsCLnorxz899VyDj7ZN7FPa6vpump", "pool": "4MWjp1aBQqE9Y6iC5cd3NrVvWWcHsN2LgpjWYMDK7u7E", "entry_t": 1793250166.9945753, "entry": 0.0017709842513545751, "stop": 0.0010963059696923153, "tp": 0.002445662533016835, "usd_in": 1.94, "sol_in": 0.019359078, "tokens": 1095.436054, "entry_bx": "2026-10-29 06:02", "deadline_bx": "2026-10-30 06:02"}, {"id": "V1-15", "name": "PAID", "mint": "98kfF7rmsg1QDUEoCqNE7g7M1FdrTt92TEp2CLzypump", "pool": "6e3jZLtf4tQbWZm3f7A66jF8tfZn6MRQVrbDFgcNWarA", "entry_t": 1793296995.9892423, "entry": 0.0037571648260580626, "stop": 0.0028294263606569647, "tp": 0.0046849032914591604, "usd_in": 2.96, "sol_in": 0.029320591, "tokens": 787.828093, "entry_bx": "2026-10-29 19:03", "deadline_bx": "2026-10-30 19:03"}, {"id": "V1-16", "name": "GTA", "mint": "BsbsB3WLq7vbY5En3MBCAsTrcwaCxNKY2Mp5pGuLpump", "pool": "5iSVs31h7HMdGGmyUvzmHDsYwV7cydD6CZJTbqzCtLii", "entry_t": 1793304199.740786, "entry": 0.0009910015345468185, "stop": 0.0005861141281492096, "tp": 0.0013958889409444277, "usd_in": 1.82, "sol_in": 0.018346327, "tokens": 1836.525915, "entry_bx": "2026-10-29 21:03", "deadline_bx": "2026-10-30 21:03"}], "closed": [{"id": "V1-1", "name": "ヤギ", "mint": "EU1MHvQvBoJ7DnLorurze1hwR2JWuyoKyAmkwymwpump", "entry_t": 1792735911.6917942, "exit_t": 1792783206.6131732, "entry_bx": "2026-10-23 08:11", "exit_bx": "2026-10-23 21:20", "reason": "stop", "usd_in": 1.52, "usd_out": 0.5886308792348207, "pnl": -0.9313691207651793}, {"id": "V1-2", "name": "CROWD", "mint": "DzQjNcuiZ1ZDMTHGYRw2EeXRzh9QxLDjAGS2DYykpump", "entry_t": 1792747346.8836617, "exit_t": 1792747975.6545181, "entry_bx": "2026-10-23 11:22", "exit_bx": "2026-10-23 11:32", "reason": "stop", "usd_in": 1.49, "usd_out": 0.22451791087431708, "pnl": -1.2654820891256828}, {"id": "V1-3", "name": "BLACKTOBER", "mint": "3Xq3nspu91fEzGbzi9kSJ4FYAnBeeiLHPoxQx6cPSQj1", "entry_t": 1792771745.8599436, "exit_t": 1792784781.0620584, "entry_bx": "2026-10-23 18:09", "exit_bx": "2026-10-23 21:46", "reason": "rug", "usd_in": 1.32, "usd_out": 0.6941351257214368, "pnl": -0.6258648742785633}, {"id": "V1-4", "name": "NTRNDM", "mint": "NTRNDMqQSiwEC2jJs3wJiZS6bpGYQJtMNQJgiX3WyV6", "entry_t": 1792797625.4018714, "exit_t": 1792884046.8849607, "entry_bx": "2026-10-24 01:20", "exit_bx": "2026-10-25 01:20", "reason": "time", "usd_in": 1.7, "usd_out": 1.7203564825866817, "pnl": 0.020356482586681768}, {"id": "V1-5", "name": "swordcat", "mint": "5tCju6YNxHq5zrA6tGndr6F7TK42mpUFmeE31cSFpump", "entry_t": 1792854186.0036352, "exit_t": 1792926651.2010453, "entry_bx": "2026-10-24 17:03", "exit_bx": "2026-10-25 12:10", "reason": "tp", "usd_in": 1.19, "usd_out": 1.9436928489202403, "pnl": 0.7536928489202404}, {"id": "V1-6", "name": "NTRNDM", "mint": "NTRNDMqQSiwEC2jJs3wJiZS6bpGYQJtMNQJgiX3WyV6", "entry_t": 1792947776.1843774, "exit_t": 1793036803.9661899, "entry_bx": "2026-10-25 18:02", "exit_bx": "2026-10-26 18:46", "reason": "time", "usd_in": 1.43, "usd_out": 0.877785678628394, "pnl": -0.552214321371606}, {"id": "V1-7", "name": "PAID", "mint": "98kfF7rmsg1QDUEoCqNE7g7M1FdrTt92TEp2CLzypump", "entry_t": 1792965878.5831144, "exit_t": 1793036813.627594, "entry_bx": "2026-10-25 23:04", "exit_bx": "2026-10-26 18:46", "reason": "stop", "usd_in": 3.02, "usd_out": 2.44870022799114, "pnl": -0.5712997720088602}, {"id": "V1-8", "name": "PumpkinBot", "mint": "5QREAgtfP1NkuymRaFdHxr5QNF2Yry9M1YCyaompump", "entry_t": 1793036845.307168, "exit_t": 1793100867.1789715, "entry_bx": "2026-10-26 18:47", "exit_bx": "2026-10-27 12:34", "reason": "tp", "usd_in": 1.19, "usd_out": 1.952019430717771, "pnl": 0.762019430717771}, {"id": "V1-9", "name": "███", "mint": "EwX2T1p2PmgTsSq2Bi6XtQYxPC5krR4P2fxPfN4Qpump", "entry_t": 1793052165.0, "exit_t": 1793138757.8029125, "entry_bx": "2026-10-26 23:02", "exit_bx": "2026-10-27 23:05", "reason": "time", "usd_in": 1.19, "usd_out": 0.766792411727258, "pnl": -0.42320758827274196}, {"id": "V1-10", "name": "MeiMei", "mint": "MsGDybWRSNdNXkdDZhEksgzugT5CbVWUG2wkhwgpump", "entry_t": 1793116974.0705092, "exit_t": 1793156410.923397, "entry_bx": "2026-10-27 17:02", "exit_bx": "2026-10-28 04:00", "reason": "tp", "usd_in": 1.28, "usd_out": 2.4503817882030106, "pnl": 1.1703817882030105}, {"id": "V1-11", "name": "NTRNDM", "mint": "NTRNDMqQSiwEC2jJs3wJiZS6bpGYQJtMNQJgiX3WyV6", "entry_t": 1793138819.7036226, "exit_t": 1793225233.1489756, "entry_bx": "2026-10-27 23:06", "exit_bx": "2026-10-28 23:07", "reason": "time", "usd_in": 2.12, "usd_out": 1.8157969394234152, "pnl": -0.30420306057658486}, {"id": "V1-12", "name": "MeiMei", "mint": "MsGDybWRSNdNXkdDZhEksgzugT5CbVWUG2wkhwgpump", "entry_t": 1793156616.5452626, "exit_t": 1793243031.29267, "entry_bx": "2026-10-28 04:03", "exit_bx": "2026-10-29 04:03", "reason": "time", "usd_in": 1.29, "usd_out": 0.9971853044426867, "pnl": -0.2928146955573133}, {"id": "V1-14", "name": "DESSA", "mint": "npz2FhoufQ7pKqhGpaipYWacrAkidyW2yDpVWSvpump", "entry_t": 1793289798.7908676, "exit_t": 1793294686.913428, "entry_bx": "2026-10-29 17:03", "exit_bx": "2026-10-29 18:24", "reason": "tp", "usd_in": 1.37, "usd_out": 2.07797582869813, "pnl": 0.7079758286981299}], "events": [{"t": "2026-10-28 18:05", "k": "done", "pools": 145, "pre": 2, "sig": 1}, {"t": "2026-10-28 19:02", "k": "SIGNAL", "name": "e/acc", "info": "vol x4.7 +10% stop dist 37%"}, {"t": "2026-10-28 19:02", "k": "SKIP", "name": "e/acc", "info": "top10 32.4197%"}, {"t": "2026-10-28 19:02", "k": "done", "pools": 137, "pre": 1, "sig": 1}, {"t": "2026-10-28 20:02", "k": "done", "pools": 141, "pre": 1, "sig": 0}, {"t": "2026-10-28 21:06", "k": "SIGNAL", "name": "SI", "info": "vol x7.1 +12% stop dist 34%"}, {"t": "2026-10-28 21:06", "k": "SKIP", "name": "SI", "info": "top10 30.926%"}, {"t": "2026-10-28 21:06", "k": "done", "pools": 139, "pre": 1, "sig": 1}, {"t": "2026-10-28 23:05", "k": "done", "pools": 140, "pre": 0, "sig": 0}, {"t": "2026-10-28 23:07", "k": "SELL", "name": "NTRNDM", "reason": "time", "usd": 1.82, "pnl": -0.3}, {"t": "2026-10-29 00:02", "k": "done", "pools": 138, "pre": 0, "sig": 0}, {"t": "2026-10-29 01:02", "k": "done", "pools": 142, "pre": 1, "sig": 0}, {"t": "2026-10-29 02:02", "k": "done", "pools": 137, "pre": 0, "sig": 0}, {"t": "2026-10-29 03:02", "k": "done", "pools": 143, "pre": 1, "sig": 0}, {"t": "2026-10-29 04:02", "k": "SIGNAL", "name": "PEAK", "info": "vol x4.1 +22% stop dist 60%"}, {"t": "2026-10-29 04:02", "k": "SKIP", "name": "PEAK", "info": "top10 33.5495%; liquidity $19,359<30000"}, {"t": "2026-10-29 04:02", "k": "done", "pools": 142, "pre": 1, "sig": 1}, {"t": "2026-10-29 04:03", "k": "SELL", "name": "MeiMei", "reason": "time", "usd": 1.0, "pnl": -0.29}, {"t": "2026-10-29 05:05", "k": "done", "pools": 151, "pre": 0, "sig": 0}, {"t": "2026-10-29 06:02", "k": "SIGNAL", "name": "VEIL", "info": "vol x11.9 +58% stop dist 38%"}, {"t": "2026-10-29 06:02", "k": "BUY", "name": "VEIL", "usd": 1.94}, {"t": "2026-10-29 06:02", "k": "done", "pools": 144, "pre": 1, "sig": 1}, {"t": "2026-10-29 07:02", "k": "done", "pools": 143, "pre": 1, "sig": 0}, {"t": "2026-10-29 08:02", "k": "done", "pools": 141, "pre": 1, "sig": 0}, {"t": "2026-10-29 09:02", "k": "done", "pools": 136, "pre": 0, "sig": 0}, {"t": "2026-10-29 10:03", "k": "done", "pools": 147, "pre": 0, "sig": 0}, {"t": "2026-10-29 11:02", "k": "done", "pools": 141, "pre": 0, "sig": 0}, {"t": "2026-10-29 12:02", "k": "done", "pools": 144, "pre": 0, "sig": 0}, {"t": "2026-10-29 13:02", "k": "SIGNAL", "name": "PINO", "info": "vol x23.8 +998% stop dist 60%"}, {"t": "2026-10-29 13:02", "k": "SKIP", "name": "PINO", "info": "top10 55.3156%; liquidity $6,609<30000"}, {"t": "2026-10-29 13:02", "k": "done", "pools": 156, "pre": 1, "sig": 1}, {"t": "2026-10-29 14:02", "k": "done", "pools": 149, "pre": 0, "sig": 0}, {"t": "2026-10-29 15:02", "k": "done", "pools": 136, "pre": 1, "sig": 0}, {"t": "2026-10-29 16:02", "k": "done", "pools": 139, "pre": 0, "sig": 0}, {"t": "2026-10-29 17:02", "k": "SIGNAL", "name": "DESSA", "info": "vol x16.6 +181% stop dist 53%"}, {"t": "2026-10-29 17:03", "k": "BUY", "name": "DESSA", "usd": 1.37}, {"t": "2026-10-29 17:03", "k": "done", "pools": 133, "pre": 1, "sig": 1}, {"t": "2026-10-29 18:02", "k": "SIGNAL", "name": "DESSA", "info": "vol x10.7 +50% stop dist 60%"}, {"t": "2026-10-29 18:02", "k": "SKIP", "name": "DESSA", "info": "already open in this mint"}, {"t": "2026-10-29 18:02", "k": "done", "pools": 139, "pre": 2, "sig": 1}, {"t": "2026-10-29 18:24", "k": "SELL", "name": "DESSA", "reason": "tp", "usd": 2.08, "pnl": 0.71}, {"t": "2026-10-29 19:02", "k": "SIGNAL", "name": "PAID", "info": "vol x17.7 +20% stop dist 25%"}, {"t": "2026-10-29 19:03", "k": "BUY", "name": "PAID", "usd": 2.96}, {"t": "2026-10-29 19:03", "k": "done", "pools": 133, "pre": 2, "sig": 1}, {"t": "2026-10-29 20:02", "k": "done", "pools": 138, "pre": 0, "sig": 0}, {"t": "2026-10-29 21:03", "k": "SIGNAL", "name": "GTA", "info": "vol x7.0 +23% stop dist 41%"}, {"t": "2026-10-29 21:03", "k": "BUY", "name": "GTA", "usd": 1.82}, {"t": "2026-10-29 21:03", "k": "done", "pools": 141, "pre": 1, "sig": 1}, {"t": "2026-10-29 22:02", "k": "done", "pools": 136, "pre": 0, "sig": 0}, {"t": "2026-10-29 23:02", "k": "done", "pools": 140, "pre": 0, "sig": 0}]}/*ENDSNAP*/;
+const W="5xgm6kuL43hXgvxENc68WDekx28q3isS1ED1YeHu8zCC",SOLM="So11111111111111111111111111111111111111112",START=18,MAXOPEN=3;
+/* publicnode first: it allows file:// (Origin null). mainnet-beta rejects Origin null via CORS but works if served over http(s). */
+const RPCS=["https://solana-rpc.publicnode.com","https://api.mainnet-beta.solana.com"];
+const TP=["TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA","TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"];
+const $=id=>document.getElementById(id),sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const usd=(v,d=2)=>v==null||isNaN(v)?"—":(v<0?"-$":"$")+Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
+const sgn=v=>v==null||isNaN(v)?"—":(v>=0?"+":"")+usd(v);
+const px=v=>v==null||isNaN(v)?"—":"$"+(v>=1?v.toFixed(4):v.toPrecision(4));
+const pct=v=>v==null||isNaN(v)?"—":(v>=0?"+":"")+v.toFixed(2)+"%";
+const cls=v=>v==null||isNaN(v)?"mut":v>=0?"g":"r";
+const big=n=>n==null?"—":n>=1e9?"$"+(n/1e9).toFixed(2)+"B":n>=1e6?"$"+(n/1e6).toFixed(2)+"M":n>=1e3?"$"+(n/1e3).toFixed(1)+"K":usd(n);
+const short=n=>n>=1e9?(n/1e9).toFixed(2)+"B":n>=1e6?(n/1e6).toFixed(2)+"M":n>=1e3?(n/1e3).toFixed(1)+"K":n.toFixed(3);
+const BXF=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Brussels",month:"short",day:"numeric",hour:"2-digit",minute:"2-digit",hour12:false});
+const bxt=ms=>BXF.format(new Date(ms));
+const parseBx=s=>{const[d,t]=s.split(" "),[y,mo,da]=d.split("-").map(Number),[h,mi]=t.split(":").map(Number);let g=Date.UTC(y,mo-1,da,h,mi);
+ for(let i=0;i<2;i++){const p=Object.fromEntries(new Intl.DateTimeFormat("en-US",{timeZone:"Europe/Brussels",hourCycle:"h23",year:"numeric",month:"numeric",day:"numeric",hour:"numeric",minute:"numeric"}).formatToParts(new Date(g)).map(x=>[x.type,+x.value]));
+  g+=Date.UTC(y,mo-1,da,h,mi)-Date.UTC(p.year,p.month-1,p.day,p.hour,p.minute)}return g};
+const LS={get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+/* ---------- animated numbers ---------- */
+const cur={};function anim(id,to,fmt){const el=$(id),from=cur[id]??to,t0=performance.now();cur[id]=to;(function f(t){const k=Math.min(1,(t-t0)/800),e=1-Math.pow(1-k,3);el.textContent=fmt(from+(to-from)*e);if(k<1)requestAnimationFrame(f)})(t0)}
+/* ---------- RPC with throttle + backoff ---------- */
+let lastCall=0;
+async function rpc(method,params,urls=[RPCS[0],RPCS[1],RPCS[0]]){let last;for(const [i,u] of urls.entries()){
+ const wait=lastCall+1100-Date.now();if(wait>0)await sleep(wait);lastCall=Date.now();if(i==2)await sleep(4000);
+ try{const r=await fetch(u,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:1,method,params})});
+  const j=await r.json().catch(()=>({}));if(j.result!==undefined)return j.result;last=j.error?.message||("HTTP "+r.status)}catch(e){last=e.message}}
+ throw new Error(method+": "+last)}
+/* ---------- state ---------- */
+let good=LS.get("solbot_last",null),prevHold=null,TX=LS.get("solbot_tx",{}),META=LS.get("solbot_meta",{}),SEEN=LS.get("solbot_seen",null),errs={},syncing=false;
+const PR=()=>good?.pr||{};
+async function prices(mints){const pr={};mints=[...new Set(mints)];
+ /* DexScreener caps a response at ~30 pairs, so SOL goes alone and tokens go in small batches */
+ const B=[];if(mints.includes(SOLM))B.push([SOLM]);const rest=mints.filter(m=>m!==SOLM);for(let i=0;i<rest.length;i+=4)B.push(rest.slice(i,i+4));
+ for(const bt of B){const r=await fetch("https://api.dexscreener.com/latest/dex/tokens/"+bt.join(","));const j=await r.json();
+  for(const p of j.pairs||[]){const m=p.baseToken.address;if(!mints.includes(m))continue;const L=p.liquidity?.usd||0;
+   if(!pr[m]||L>pr[m].liq)pr[m]={price:+p.priceUsd,sym:p.baseToken.symbol,h1:p.priceChange?.h1,h24:p.priceChange?.h24,liq:L,url:p.url,pool:p.pairAddress,mc:p.marketCap??p.fdv,vol:p.volume?.h24}}}
+ return pr}
+async function load(){
+ let sol,toks=null;
+ try{sol=(await rpc("getBalance",[W])).value/1e9;delete errs.bal}catch(e){errs.bal=e.message}
+ try{if(location.protocol==="file:")throw 0;toks=[];for(const p of TP){const r=await rpc("getTokenAccountsByOwner",[W,{programId:p},{encoding:"jsonParsed"}],[RPCS[1]]);
+  for(const a of r.value){const i=a.account.data.parsed.info,amt=+i.tokenAmount.uiAmountString;if(amt>0)toks.push({mint:i.mint,amt})}}delete errs.tok}catch(e){toks=await viaKnown()}
+ const mints=[SOLM,...(toks||good?.toks||[]).map(t=>t.mint),...SNAP.open.map(o=>o.mint),...chainMints()];
+ let pr={};try{pr=await prices(mints);if(!pr[SOLM])throw new Error("no SOL price");delete errs.dex}catch(e){errs.dex="DexScreener: "+e.message}
+ const d=good?{...good}:{pr:{}};if(sol!=null)d.sol=sol;if(toks)d.toks=toks;d.pr={...d.pr,...pr};
+ if(d.sol!=null&&d.pr[SOLM]&&(sol!=null||toks||Object.keys(pr).length)){if(sol!=null&&toks&&pr[SOLM])d.t=Date.now();good=d;LS.set("solbot_last",good);holdDiff(d);render()}
+ showErr();syncChain();
+}
+function showErr(){const e=Object.values(errs);$("err").style.display=e.length?"block":"none";$("err").textContent="⚠ "+e.join(" · ")+(good?.t?" — showing last good data from "+bxt(good.t):"")}
+/* indexed getTokenAccountsByOwner is refused by publicnode; fallback = read the token accounts seen in the wallet's own txs */
+async function viaKnown(){const acc=knownAccts();if(!acc.length){errs.tok="holdings: waiting for tx history";return null}
+ try{const out=[];for(let i=0;i<acc.length;i+=100){const r=await rpc("getMultipleAccounts",[acc.slice(i,i+100),{encoding:"jsonParsed"}]);
+  for(const a of r.value){const i2=a?.data?.parsed?.info;if(!i2||i2.owner!==W)continue;const amt=+i2.tokenAmount.uiAmountString;if(amt>0)out.push({mint:i2.mint,amt})}}delete errs.tok;return out}catch(e){errs.tok="holdings: "+e.message;return null}}
+function knownAccts(){const s=new Set();for(const k in TX){const x=TX[k];if(x&&x.acc)for(const a in x.acc)if(x.acc[a]!==SOLM)s.add(a)}return[...s]}
+/* ---------- chain history ---------- */
+function parseTx(tx){const m=tx.meta,keys=tx.transaction.message.accountKeys.map(k=>k.pubkey||k),i=keys.indexOf(W);if(i<0)return null;
+ let sol=(m.postBalances[i]-m.preBalances[i])/1e9;const tok={},acc={};
+ for(const [s,arr] of [[-1,m.preTokenBalances||[]],[1,m.postTokenBalances||[]]])for(const b of arr){if(b.owner!==W)continue;acc[keys[b.accountIndex]]=b.mint;tok[b.mint]=(tok[b.mint]||0)+s*(+b.uiTokenAmount.uiAmountString||0)}
+ if(tok[SOLM]){sol+=tok[SOLM];delete tok[SOLM]}for(const k in tok)if(Math.abs(tok[k])<1e-9)delete tok[k];return{t:tx.blockTime*1000,sol,tok,acc}}
+async function syncChain(){if(syncing)return;syncing=true;
+ try{const sigs=await rpc("getSignaturesForAddress",[W,{limit:50}]);let n=0;
+  for(const s of sigs.reverse()){if(s.signature in TX)continue;if(s.err){TX[s.signature]=0;continue}if(n++>=50)break;
+   try{const tx=await rpc("getTransaction",[s.signature,{encoding:"jsonParsed",maxSupportedTransactionVersion:0,commitment:"confirmed"}]);if(!tx)continue;TX[s.signature]=parseTx(tx)||0;LS.set("solbot_tx",TX)}catch(e){errs.tx="history: "+e.message;break}}
+  if(n<=50)delete errs.tx;
+  const need=chainMints().filter(m=>!META[m]&&!PR()[m]);if(need.length){try{const p=await prices(need);for(const m of need)META[m]=p[m]?.sym||m.slice(0,4);LS.set("solbot_meta",META)}catch{}}
+  delete errs.sig}catch(e){errs.sig="history: "+e.message}
+ syncing=false;const ka=knownAccts().length;if(ka!==lastKA){lastKA=ka;if(errs.tok){const t=await viaKnown();if(t&&good){good.toks=t;good.t=Date.now();LS.set("solbot_last",good);holdDiff(good)}}}showErr();render();newEvents()}
+let lastKA=-1;
+function chainMints(){const s=new Set();for(const k in TX){const x=TX[k];if(x)for(const m in x.tok)s.add(m)}return[...s]}
+const symOf=m=>PR()[m]?.sym||META[m]||SNAP.open.concat(SNAP.closed).find(x=>x.mint===m)?.name||String(m||"?").slice(0,4)+"…";
+function trades(){ /* FIFO round trips from chain, merged with snapshot */
+ const tx=Object.entries(TX).filter(([,x])=>x).map(([sig,x])=>({sig,...x})).sort((a,b)=>a.t-b.t),lots={},out=[],evs=[];const sp=PR()[SOLM]?.price;
+ for(const x of tx){const ms=Object.keys(x.tok);if(ms.length!==1)continue;const m=ms[0],q=x.tok[m];
+  if(q>0&&x.sol<0){const L={mint:m,t:x.t,qty:q,left:q,sol:-x.sol,sig:x.sig};(lots[m]=lots[m]||[]).push(L);evs.push({k:"BUY",t:x.t,mint:m,sol:-x.sol,sig:x.sig})}
+  else if(q<0&&x.sol>0){let rem=-q,cost=0,first=null;for(const L of lots[m]||[]){if(rem<=0)break;if(L.left<=0)continue;const u=Math.min(rem,L.left);cost+=L.sol*u/L.qty;L.left-=u;rem-=u;first=first||L}
+   const tr={mint:m,entry_t:first?.t,exit_t:x.t,sol_in:cost,sol_out:x.sol,sig:x.sig,live:true};const sn=SNAP.closed.find(c=>c.mint===m&&Math.abs(c.exit_t*1000-x.t)<6e5);
+   if(sn)Object.assign(tr,{entry_t:tr.entry_t||sn.entry_t*1000,id:sn.id,reason:sn.reason,usd_in:sn.usd_in,usd_out:sn.usd_out,pnl:sn.pnl,live:false});else if(sp)Object.assign(tr,{usd_in:cost*sp,usd_out:x.sol*sp,pnl:(x.sol-cost)*sp});
+   out.push(tr);evs.push({k:"SELL",t:x.t,mint:m,usd:tr.usd_out,pnl:tr.pnl,reason:tr.reason,sig:x.sig})}}
+ for(const e of evs)if(e.k==="BUY"){const s=SNAP.open.concat(SNAP.closed).find(c=>c.mint===e.mint&&Math.abs(c.entry_t*1000-e.t)<6e5);e.usd=s?s.usd_in:sp?e.sol*sp:null;e.id=s?.id}
+ return{closed:out,evs,earliest:tx[0]?.t}}
+/* ---------- toasts / confetti ---------- */
+function toast(title,body,c="g"){const el=document.createElement("div");el.className="toast";el.innerHTML=`<div class="av">🤖</div><div style="flex:1"><div style="font-weight:600;font-size:14px" class="${c}">${esc(title)}</div><div class="sm">${esc(body)}</div></div><div class="sm">now</div>`;
+ $("toasts").prepend(el);setTimeout(()=>{el.classList.add("out");setTimeout(()=>el.remove(),450)},5500)}
+function confetti(){const c=$("cf"),x=c.getContext("2d");c.width=innerWidth;c.height=innerHeight;const P=[...Array(90)].map(()=>({x:innerWidth/2,y:90,vx:(Math.random()-.5)*9,vy:Math.random()*-6-2,c:["#22c55e","#86efac","#facc15","#38bdf8","#fff"][Math.random()*5|0],s:3+Math.random()*4,r:Math.random()*6}));let f=0;
+ (function a(){x.clearRect(0,0,c.width,c.height);for(const p of P){p.x+=p.vx;p.y+=p.vy;p.vy+=.22;p.vx*=.99;p.r+=.2;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.globalAlpha=Math.max(0,1-f/110);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);x.restore()}if(++f<110)requestAnimationFrame(a);else x.clearRect(0,0,c.width,c.height)})()}
+let recentToast={};
+function newEvents(){const{evs}=trades();if(SEEN===null){SEEN=evs.map(e=>e.sig);LS.set("solbot_seen",SEEN);return}
+ for(const e of evs){if(SEEN.includes(e.sig))continue;SEEN.push(e.sig);recentToast[e.mint]=Date.now();const s=symOf(e.mint);
+  if(e.k==="BUY")toast("Bought "+s,usd(e.usd)+" · "+bxt(e.t),"g");
+  else{toast((e.pnl>=0?"Sold ":"Stopped out ")+s,usd(e.usd)+" · P&L "+sgn(e.pnl),e.pnl>=0?"g":"r");if(e.pnl>0)confetti()}}
+ SEEN=SEEN.slice(-300);LS.set("solbot_seen",SEEN)}
+function holdDiff(d){const vis=new Set((d.toks||[]).filter(t=>(d.pr[t.mint]?.price||0)*t.amt>=.05).map(t=>t.mint));
+ if(prevHold){for(const m of vis)if(!prevHold.has(m)&&!(Date.now()-(recentToast[m]||0)<3e5)){recentToast[m]=Date.now();toast("Bought "+symOf(m),"New holding detected","g")}
+  for(const m of prevHold)if(!vis.has(m)&&!(Date.now()-(recentToast[m]||0)<3e5)){recentToast[m]=Date.now();toast("Sold "+symOf(m),"Holding closed","r")}}
+ prevHold=vis}
+/* ---------- render ---------- */
+function holdings(){const d=good,rows=[];let v=0;for(const t of d?.toks||[]){const p=d.pr[t.mint];const val=p?p.price*t.amt:null;if(val==null||val<.05)continue;v+=val;rows.push({...t,p,val})}return{rows:rows.sort((a,b)=>b.val-a.val),v}}
+function render(){if(!good?.pr?.[SOLM])return;const d=good,sp=d.pr[SOLM].price,{rows,v}=holdings(),tot=d.sol*sp+v,pl=tot-START;
+ anim("tot",tot,x=>usd(x));$("gain").className="chg "+cls(pl);$("gain").textContent=(pl>=0?"▲ ":"▼ ")+sgn(pl).replace("+","")+" ("+pct(pl/START*100)+")";$("mult").textContent=(tot/START).toFixed(2)+"x";
+ $("upd").textContent=d.t?"Updated "+bxt(d.t):"—";$("solc").textContent=d.sol.toFixed(4)+" SOL · "+usd(d.sol*sp);$("solp").textContent=usd(sp);
+ if(d.t){const H=LS.get("solbot_hist",[]);if(!H.length||H[H.length-1][0]!==d.t){H.push([d.t,tot]);while(H.length>3000)H.shift();LS.set("solbot_hist",H)}line($("ch"),H.map(x=>x[1]),START)}
+ const T=trades(),ev=SNAP.events||[];
+ /* agents */
+ const scans=ev.filter(e=>e.k==="done"),ls=scans[scans.length-1],an=ev.filter(e=>e.k==="SIGNAL"||e.k==="SKIP").slice(-3).reverse();
+ const lb=T.evs.filter(e=>e.k==="BUY").pop()||ev.filter(e=>e.k==="BUY").map(e=>({...e,t:parseBx(e.t)})).pop();
+ const A=(i,bg,n,st,kv)=>`<div class="ag"><div class="agh"><div class="agi" style="background:${bg}">${i}</div><b>${n}</b><span class="st">${st}</span></div>${kv.map(([k,v])=>`<div class="kv"><span>${k}</span><span>${v}</span></div>`).join("")}</div>`;
+ $("agents").innerHTML=A("🛰","#3b82f622","Scanner","● active",[["Last scan",ls?esc(ls.t.slice(5)):"—"],["Pools scanned",ls?.pools??"—"],["Prefiltered",ls?.pre??"—"],["V1 signals",ls?.sig??"—"],["Scans in log",scans.length]])
+ +A("🧠","#a855f722","Analyst",an.length+" recent",an.map(e=>[esc(e.name)+" <span class=sm>"+esc(e.t.slice(11))+"</span>",e.k==="SKIP"?`<span class="r" title="${esc(e.info)}">skip · ${esc((e.info||"").slice(0,26))}</span>`:`<span class="g">signal · ${esc((e.info||"").slice(0,20))}</span>`]).concat(an.length?[]:[["No recent signals",""]]))
+ +A("⚡","#22c55e22","Executor","ready",[["Sizing","5% risk"],["Max size","20% of stack"],["Last fill",lb?esc(lb.mint?symOf(lb.mint):lb.name)+" "+usd(lb.usd):"—"],["When",lb?bxt(lb.t):"—"]])
+ +A("🛡","#f59e0b22","Risk",SNAP.open.length+"/"+MAXOPEN+" open",[["Stop","4× ATR"],["Take profit","1R"],["Time stop","24h"],["Open slots",SNAP.open.length+" / "+MAXOPEN]]);
+ /* positions */
+ const P=SNAP.open.map(o=>{const p=d.pr[o.mint],c=p?.price,held=(d.toks||[]).find(t=>t.mint===o.mint),val=c&&held?c*held.amt:null;return{o,p,c,held,val,fe:c?(c/o.entry-1)*100:null}});
+ $("slots").textContent=P.length+"/"+MAXOPEN+" slots";
+ $("hpos").innerHTML=P.map(x=>`<div class="it pc" onclick="openCoin('${x.o.mint}')"><div class="ic ${x.fe>=0?"bg-g":"bg-r"}">${esc(x.o.name[0])}</div><div class="m"><div>${esc(x.o.name)}<span class="tag">${x.o.id}</span></div><div class="sm">${px(x.c)} · in ${usd(x.o.usd_in)}</div></div><div class="v"><div>${usd(x.val)}</div><div class="sm ${cls(x.fe)}">${pct(x.fe)}</div></div></div>`).join("")||`<div class="sm">No open positions</div>`;
+ $("pos").innerHTML=P.map(x=>{const o=x.o,c=x.c,pos=c?Math.max(0,Math.min(100,(c-o.stop)/(o.tp-o.stop)*100)):0,ep=(o.entry-o.stop)/(o.tp-o.stop)*100,pl=x.val!=null?x.val-o.usd_in:null;
+  return`<div class="card pc" onclick="openCoin('${o.mint}')"><div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:17px">${esc(o.name)}</b><span class="tag">${o.id}</span>${x.held?"":"<span class='tag r'>not in wallet</span>"}<div class="sm">Entry ${esc(o.entry_bx.slice(5))} · time stop ${esc(o.deadline_bx.slice(5))}</div></div><div style="text-align:right"><div style="font-size:20px;font-weight:700" class="${cls(x.fe)}">${pct(x.fe)}</div><div class="sm">${usd(x.val)} (${sgn(pl)})</div></div></div>
+  <div class="bar"><div class="ent" style="left:${ep}%"></div><div class="mk" style="left:${pos}%"></div></div><div class="bl"><span>Stop ${px(o.stop)}</span><span style="color:var(--b)">Entry ${px(o.entry)}</span><span>TP ${px(o.tp)}</span></div>
+  <div class="bl" style="margin-top:6px"><span>to stop <b class="r">${c?"-"+((c/o.stop-1)*100).toFixed(1)+"%":"—"}</b></span><span>now <b style="color:var(--tx)">${px(c)}</b></span><span>to TP <b class="g">${c?"+"+((o.tp/c-1)*100).toFixed(1)+"%":"—"}</b></span></div></div>`}).join("")||`<div class="card sm">No open positions</div>`;
+ $("hold").innerHTML=rows.map(r=>`<div class="it"><div class="ic bg-m">${esc((r.p.sym||"?")[0])}</div><div class="m"><div>${esc(r.p.sym)}</div><div class="sm">${short(r.amt)} · ${px(r.p.price)} · liq ${big(r.p.liq)}</div></div><div class="v"><div>${usd(r.val)}</div><div class="sm"><span class="${cls(r.p.h1)}">1h ${pct(r.p.h1)}</span> · <span class="${cls(r.p.h24)}">24h ${pct(r.p.h24)}</span></div><a class="sm" style="color:var(--b)" href="${esc(r.p.url)}" target="_blank">DexScreener ↗</a></div></div>`).join("")||`<div class="sm">No holdings above $0.05</div>`;
+ /* activity */
+ const hasChain=T.evs.length>0,cut=T.earliest||Infinity;
+ const feed=[...T.evs.map(e=>({...e,name:symOf(e.mint),live:1})),...ev.filter(e=>e.k==="SKIP"||e.k==="SIGNAL"||((e.k==="BUY"||e.k==="SELL")&&parseBx(e.t)<cut)).map(e=>({...e,t:parseBx(e.t),usd:e.usd}))].sort((a,b)=>b.t-a.t).slice(0,25);
+ $("actsrc").textContent=hasChain?"live from chain + bot log":"bot log snapshot";
+ $("act").innerHTML=feed.map(e=>{let ic,c,title,val="",sub=bxt(e.t);
+  if(e.k==="BUY"){ic="↓";c="bg-b";title="Bought "+e.name;val=`<div>${usd(e.usd)}</div>`}
+  else if(e.k==="SELL"){const r=e.reason||"";c=e.pnl>=0?"bg-g":"bg-r";ic=e.pnl>=0?"✓":"✕";title=(r==="tp"?"Take profit ":r==="stop"?"Stopped out ":r==="time"?"Time stop ":r?r+" ":"Sold ")+e.name;val=`<div>${usd(e.usd)}</div><div class="sm ${cls(e.pnl)}">${sgn(e.pnl)}</div>`}
+  else if(e.k==="SKIP"){ic="–";c="bg-m";title="Skipped "+e.name;sub+=" · "+(e.info||"")}
+  else{ic="◎";c="bg-m";title="Signal "+e.name;sub+=" · "+(e.info||"")}
+  return`<div class="it"><div class="ic ${c}">${ic}</div><div class="m"><div>${esc(title)}</div><div class="sm" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(sub)}</div></div><div class="v">${val}</div></div>`}).join("")||`<div class="sm">No activity yet</div>`;
+ /* history */
+ const H=hasChain?T.closed.slice():SNAP.closed.map(c=>({...c,entry_t:c.entry_t*1000,exit_t:c.exit_t*1000}));
+ if(hasChain)for(const c of SNAP.closed)if(c.exit_t*1000<cut-6e5)H.push({...c,entry_t:c.entry_t*1000,exit_t:c.exit_t*1000});
+ H.sort((a,b)=>b.exit_t-a.exit_t);const pn=H.map(x=>x.pnl).filter(x=>x!=null),rs=pn.reduce((a,b)=>a+b,0),w=pn.filter(x=>x>0).length;
+ $("hsrc").textContent=hasChain?"live from chain · labels from snapshot "+SNAP.as_of:"snapshot as of "+SNAP.as_of;
+ $("hstat").innerHTML=`<div><span class="sm">Realized P&L</span><b class="${cls(rs)}">${sgn(rs)}</b></div><div><span class="sm">Win rate</span><b>${pn.length?Math.round(w/pn.length*100):0}% <span class="sm">${w}/${pn.length}</span></b></div>`;
+ $("hist").innerHTML=H.map(x=>{const r=x.reason||"";return`<div class="it"><div class="ic ${x.pnl>=0?"bg-g":"bg-r"}">${x.pnl>=0?"✓":"✕"}</div><div class="m"><div>${esc(x.name||symOf(x.mint))}${x.id?`<span class="tag">${x.id}</span>`:""}<span class="tag">${x.live?"live":esc(r)}</span></div><div class="sm">${x.entry_t?bxt(x.entry_t):"?"} → ${bxt(x.exit_t)} · in ${usd(x.usd_in)}</div></div><div class="v"><div>${usd(x.usd_out)}</div><div class="sm ${cls(x.pnl)}">${sgn(x.pnl)}</div></div></div>`}).join("")||`<div class="sm">No closed trades</div>`;
+ if($("det").classList.contains("on")&&detMint)detPanel(detMint);
+}
+/* ---------- line chart ---------- */
+function line(cv,vs,base){const r=devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;cv.width=w*r;cv.height=h*r;const x=cv.getContext("2d");x.scale(r,r);
+ if(vs.length<2){x.fillStyle="#8e8e93";x.font="12px sans-serif";x.textAlign="center";x.fillText("Collecting live samples… (every 30s)",w/2,h/2);$("chi").textContent="";if(vs.length<1)return;vs=[vs[0],vs[0]]}
+ let lo=Math.min(...vs,base??Infinity),hi=Math.max(...vs,base??-Infinity);if(hi-lo<.1){hi+=.05;lo-=.05}const X=i=>i/(vs.length-1)*w,Y=v=>h-12-(v-lo)/(hi-lo)*(h-34);
+ const up=vs[vs.length-1]>=(base??vs[0]),col=up?"#22c55e":"#ef4444";
+ if(base!=null){x.strokeStyle="#ffffff22";x.setLineDash([3,5]);x.beginPath();x.moveTo(0,Y(base));x.lineTo(w,Y(base));x.stroke();x.setLineDash([])}
+ x.beginPath();vs.forEach((v,i)=>i?x.lineTo(X(i),Y(v)):x.moveTo(0,Y(v)));x.strokeStyle=col;x.lineWidth=2.4;x.lineJoin="round";x.stroke();
+ const g=x.createLinearGradient(0,0,0,h);g.addColorStop(0,col+"44");g.addColorStop(1,col+"00");x.lineTo(w,h);x.lineTo(0,h);x.fillStyle=g;x.fill();
+ x.beginPath();x.arc(X(vs.length-1)-3,Y(vs[vs.length-1]),4,0,7);x.fillStyle=col;x.fill();
+ if(cv.id==="ch"){const H=LS.get("solbot_hist",[]);if(H.length>1)$("chi").textContent=`${H.length} samples since ${bxt(H[0][0])} · dashed = $18 start`}}
+/* ---------- coin detail ---------- */
+let detMint=null,ohlc=null,tf=5;
+function openCoin(m){detMint=m;ohlc=null;$("det").classList.add("on");detPanel(m);loadOhlc()}
+function closeCoin(){$("det").classList.remove("on");detMint=null}
+function detPanel(m){const o=SNAP.open.find(x=>x.mint===m),p=PR()[m]||{},held=(good?.toks||[]).find(t=>t.mint===m),val=p.price&&held?p.price*held.amt:null,pl=val!=null?val-o.usd_in:null;
+ $("detb").innerHTML=`<div style="display:flex;align-items:center;gap:12px"><button class="back" onclick="closeCoin()">‹</button><div style="flex:1"><div style="font-size:20px;font-weight:700">${esc(o.name)} <span class="tag">${o.id}</span></div><span class="sol">◎ Solana</span></div>
+ <div style="text-align:right"><div style="font-size:20px;font-weight:700">${px(p.price)}</div><div class="sm ${cls(p.h24)}">${pct(p.h24)} 24h</div></div></div>
+ <div class="seg">${[1,5,15].map(a=>`<button class="${a===tf?"on":""}" onclick="tf=${a};ohlc=null;loadOhlc()">${a}m</button>`).join("")}</div>
+ <canvas id="cc"></canvas><div class="sm" id="ccn" style="margin:4px 0 12px"><span style="color:var(--b)">● buy</span> · <span style="color:var(--o)">┄ stop</span> · <span class="g">— TP</span> · GeckoTerminal OHLCV</div>
+ <div class="mx"><div><span class="sm">Market cap</span><b>${big(p.mc)}</b></div><div><span class="sm">Liquidity</span><b>${big(p.liq)}</b></div><div><span class="sm">24h volume</span><b>${big(p.vol)}</b></div><div><span class="sm">1h change</span><b class="${cls(p.h1)}">${pct(p.h1)}</b></div></div>
+ <h3>Your position</h3><div class="card"><div class="kv"><span>Invested</span><span>${usd(o.usd_in)}</span></div><div class="kv"><span>Current value</span><span>${usd(val)}</span></div><div class="kv"><span>P&L</span><span class="${cls(pl)}">${sgn(pl)} (${pct(pl!=null?pl/o.usd_in*100:null)})</span></div>
+ <div class="kv"><span>Entry</span><span>${px(o.entry)} · ${esc(o.entry_bx.slice(5))}</span></div><div class="kv"><span>Stop / TP</span><span><span style="color:var(--o)">${px(o.stop)}</span> / <span class="g">${px(o.tp)}</span></span></div><div class="kv"><span>Time stop</span><span>${esc(o.deadline_bx.slice(5))}</span></div><div class="kv"><span>Tokens</span><span>${short(held?.amt||o.tokens)}</span></div></div>
+ ${p.url?`<a href="${esc(p.url)}" target="_blank" style="display:block;text-align:center;color:var(--b);text-decoration:none;margin:6px 0 24px">Open on DexScreener ↗</a>`:""}`;
+ drawCandles()}
+async function loadOhlc(){const m=detMint,o=SNAP.open.find(x=>x.mint===m),pool=PR()[m]?.pool||o.pool;
+ try{const r=await fetch(`https://api.geckoterminal.com/api/v2/networks/solana/pools/${pool}/ohlcv/minute?aggregate=${tf}&limit=200`);if(!r.ok)throw new Error("HTTP "+r.status);
+  const j=await r.json();if(m!==detMint)return;ohlc=j.data.attributes.ohlcv_list.map(c=>({t:c[0]*1000,o:+c[1],h:+c[2],l:+c[3],c:+c[4]})).sort((a,b)=>a.t-b.t);drawCandles()}
+ catch(e){ohlc="err";drawCandles();$("ccn").textContent="Candles unavailable ("+e.message+") — showing session price line"}}
+function drawCandles(){const cv=$("cc");if(!cv)return;const o=SNAP.open.find(x=>x.mint===detMint),r=devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;cv.width=w*r;cv.height=h*r;const x=cv.getContext("2d");x.scale(r,r);
+ if(!ohlc){x.fillStyle="#8e8e93";x.font="12px sans-serif";x.textAlign="center";x.fillText("Loading candles…",w/2,h/2);return}
+ if(ohlc==="err"){const p=PR()[detMint]?.price;line(cv,p?[o.entry,p]:[o.entry,o.entry],o.entry);return}
+ const C=ohlc,R=44,lo=Math.min(o.stop,...C.map(c=>c.l))*.98,hi=Math.max(o.tp,...C.map(c=>c.h))*1.02,Y=v=>8+(hi-v)/(hi-lo)*(h-24),cw=(w-R)/C.length,X=i=>i*cw+cw/2;
+ x.font="10px sans-serif";x.fillStyle="#555";for(let k=0;k<=4;k++){const v=lo+(hi-lo)*k/4;x.fillText(v.toPrecision(3),w-R+4,Y(v)+3);x.fillStyle="#1b1b20";x.fillRect(0,Y(v),w-R,1);x.fillStyle="#555"}
+ const hl=(v,col,dash,lab)=>{x.strokeStyle=col;x.setLineDash(dash);x.lineWidth=1.2;x.beginPath();x.moveTo(0,Y(v));x.lineTo(w-R,Y(v));x.stroke();x.setLineDash([]);x.fillStyle=col;x.fillText(lab,4,Y(v)-4)};
+ hl(o.stop,"#f59e0b",[4,4],"STOP "+px(o.stop));hl(o.tp,"#22c55e",[],"TP "+px(o.tp));
+ C.forEach((c,i)=>{const up=c.c>=c.o,col=up?"#22c55e":"#ef4444";x.strokeStyle=col;x.fillStyle=col;x.beginPath();x.moveTo(X(i),Y(c.h));x.lineTo(X(i),Y(c.l));x.lineWidth=1;x.stroke();
+  const bw=Math.max(1,cw*.65);x.fillRect(X(i)-bw/2,Y(Math.max(c.o,c.c)),bw,Math.max(1,Math.abs(Y(c.o)-Y(c.c))))});
+ const et=o.entry_t*1000,step=tf*6e4;let ei=C.findIndex(c=>et>=c.t&&et<c.t+step);if(ei<0&&et<C[0].t)ei=-1;
+ if(ei>=0){const ex=X(ei),ey=Y(o.entry);x.fillStyle="#3b82f6";x.beginPath();x.arc(ex,ey,6,0,7);x.fill();x.strokeStyle="#000";x.lineWidth=2;x.stroke();x.fillStyle="#3b82f6";x.font="bold 10px sans-serif";x.fillText("BUY",Math.min(ex+9,w-R-24),ey+3)}
+ else{x.fillStyle="#3b82f6";x.fillText("◀ BUY "+px(o.entry)+" (before window)",4,Y(o.entry)+3)}
+ const last=C[C.length-1];x.fillStyle="#fff";x.fillRect(w-R,Y(last.c)-7,R,14);x.fillStyle="#000";x.fillText(last.c.toPrecision(3),w-R+3,Y(last.c)+3)}
+/* ---------- boot ---------- */
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tabs button").forEach(z=>z.classList.toggle("on",z===b));document.querySelectorAll(".page").forEach(p=>p.classList.toggle("on",p.id==="p-"+b.dataset.p));window.scrollTo({top:0,behavior:"smooth"});render()});
+$("wl").textContent=W.slice(0,4)+"…"+W.slice(-4);$("wl").href="https://solscan.io/account/"+W;
+addEventListener("resize",()=>{render();drawCandles()});
+render();load();setInterval(load,30000);
+{const hs=location.hash.slice(1);const b=document.querySelector(`.tabs button[data-p="${hs}"]`);if(b)b.click();if(hs.startsWith("coin="))setTimeout(()=>openCoin(hs.slice(5)),1500)}
+</script><script>if("serviceWorker"in navigator&&location.protocol==="https:")navigator.serviceWorker.register("sw.js")</script></body></html>
